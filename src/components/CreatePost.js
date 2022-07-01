@@ -26,6 +26,27 @@ function CreatePost() {
 
     const [NSFW, setNSFW] = useState(false);
 
+    function handleUpload(e) {
+        const file = e.target.files[0];
+        // Check if file is under 25MB
+        if (file.size > 26214400) {
+            alert("Maximum file size is 25MB");
+            e.target.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (file.type.includes("image")) {
+                console.log("image");
+                setImage(reader.result);
+            } else if (file.type.includes("video")) {
+                console.log("video");
+                setVideo(reader.result);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
     return (
         <div className="CreatePost">
             <div className="max-w-4xl m-auto">
@@ -86,25 +107,52 @@ function CreatePost() {
                                 onChange={e => setBody(e.target.value)}
                             ></textarea>
                         )}
+                        {/* If post type is image, display file input. If image has already been uploaded, display image preview */}
                         {postType === "image" && (
-                            <div className="flex justify-center items-center h-32 input-border">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    id="image"
-                                    name="image"
-                                    className="w-auto"
-                                />
+                            <div className="flex justify-center items-center min-h-[8rem] input-border">
+                                {image ? (
+                                    <div className="flex justify-center items-center min-h-[8rem]">
+                                        <img
+                                            src={image}
+                                            alt="uploaded by user"
+                                            className="max-h-96 max-w-full"
+                                        />
+                                    </div>
+                                ) : (
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        id="image"
+                                        name="image"
+                                        className="w-auto"
+                                        onChange={handleUpload}
+                                    />
+                                )}
                             </div>
                         )}
+                        {/* If post type is video, display file input. If video has already been uploaded, display video preview */}
                         {postType === "video" && (
-                            <div className="flex justify-center items-center h-32 input-border">
-                                <input
-                                    type="file"
-                                    accept="video/*"
-                                    id="video"
-                                    name="video"
-                                />
+                            <div className="flex justify-center items-center min-h-[8rem] input-border">
+                                {video ? (
+                                    <div className="flex justify-center items-center min-h-[8rem]">
+                                        <video
+                                            controls
+                                            width={960}
+                                            height={720}
+                                        >
+                                            <source src={video} />
+                                        </video>
+                                    </div>
+                                ) : (
+                                    <input
+                                        type="file"
+                                        accept="video/*"
+                                        id="video"
+                                        name="video"
+                                        className="w-auto"
+                                        onChange={handleUpload}
+                                    />
+                                )}
                             </div>
                         )}
                         <div className="border-b-1 border-gray-200 py-3">
