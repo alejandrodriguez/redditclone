@@ -1,13 +1,22 @@
 import React, { useState } from "react";
+import Select from "react-select";
 
 function CreatePost() {
+    const mockSubreddits = [
+        { value: "funny", label: "r/funny" },
+        { value: "ProgrammerHumor", label: "r/ProgrammerHumor" },
+        { value: "ThatsInsane", label: "r/ThatsInsane" },
+        { value: "news", label: "r/news" },
+        { value: "science", label: "r/science" }
+    ];
+
     const [subreddit, setSubreddit] = useState(null);
 
     const [postType, setPostType] = useState("text");
 
-    const [title, setTitle] = useState(null);
+    const [title, setTitle] = useState("");
 
-    const [body, setBody] = useState(null);
+    const [body, setBody] = useState("");
 
     const [image, setImage] = useState(null);
 
@@ -23,8 +32,13 @@ function CreatePost() {
                 <h2 className="text-lg font-bold border-b-white border-b-1 mb-4 py-3">
                     Create a post
                 </h2>
-                <div className="bg-white p-2 my-2 w-72">Choose a community</div>
-                <div className="bg-white">
+                <Select
+                    className="w-72 mb-2"
+                    options={mockSubreddits}
+                    placeholder="Choose a community"
+                    onChange={setSubreddit}
+                />
+                <div className="bg-white rounded-md">
                     <div className="flex">
                         <div
                             className={`post-tab ${
@@ -59,6 +73,8 @@ function CreatePost() {
                             placeholder="Title"
                             maxLength={300}
                             className="input-border block mb-2"
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
                         />
                         {postType === "text" && (
                             <textarea
@@ -66,6 +82,8 @@ function CreatePost() {
                                 id="text"
                                 placeholder="Text (optional)"
                                 className="input-border h-32"
+                                value={body}
+                                onChange={e => setBody(e.target.value)}
                             ></textarea>
                         )}
                         {postType === "image" && (
@@ -93,14 +111,18 @@ function CreatePost() {
                             <button
                                 type="button"
                                 onClick={() => setSpoiler(!spoiler)}
-                                className="text-gray-400 border-gray-400"
+                                className={`text-gray-400 border-gray-400 ${
+                                    spoiler && "spoiler-active"
+                                }`}
                             >
                                 Spoiler
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setNSFW(!NSFW)}
-                                className="text-gray-400 border-gray-400"
+                                className={`text-gray-400 border-gray-400 ${
+                                    NSFW && "nsfw-active"
+                                }`}
                             >
                                 NSFW
                             </button>
