@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import Select from "react-select";
+import { posts, storage } from "../firebaseConfig";
+import { addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import uniqid from "uniqid";
 
 function CreatePost() {
     const mockSubreddits = [
@@ -12,7 +16,7 @@ function CreatePost() {
 
     const [subreddit, setSubreddit] = useState(null);
 
-    const [postType, setPostType] = useState("text");
+    const [type, setType] = useState("text");
 
     const [title, setTitle] = useState("");
 
@@ -37,14 +41,37 @@ function CreatePost() {
         const reader = new FileReader();
         reader.onload = () => {
             if (file.type.includes("image")) {
-                console.log("image");
                 setImage(reader.result);
             } else if (file.type.includes("video")) {
-                console.log("video");
                 setVideo(reader.result);
             }
         };
         reader.readAsDataURL(file);
+    }
+
+    async function submitPost(e) {
+        e.preventDefault();
+        const post = {
+            subreddit,
+            type,
+            title,
+            spoiler,
+            NSFW
+        };
+        if (type === "text") {
+            post.body = body;
+        } else {
+            let fileRef;
+            if (type === "image") {
+                fileRef = ref(storage, `images/${uniqid()}`);
+                await uploadBytes(fileRef, image, "data_url");
+            } else {
+                fileRef = ref(storage, `videos/${uniqid()}`);
+                await uploadBytes(fileRef, video, "data_url");
+            }
+            post.src = await getDownloadURL(fileRef);
+        }
+        await addDoc(posts, post);
     }
 
     return (
@@ -63,25 +90,25 @@ function CreatePost() {
                     <div className="flex">
                         <div
                             className={`post-tab ${
-                                postType === "text" && "selected-tab"
+                                type === "text" && "selected-tab"
                             }`}
-                            onClick={() => setPostType("text")}
+                            onClick={() => setType("text")}
                         >
                             Post
                         </div>
                         <div
                             className={`post-tab ${
-                                postType === "image" && "selected-tab"
+                                type === "image" && "selected-tab"
                             }`}
-                            onClick={() => setPostType("image")}
+                            onClick={() => setType("image")}
                         >
                             Image
                         </div>
                         <div
                             className={`post-tab ${
-                                postType === "video" && "selected-tab"
+                                type === "video" && "selected-tab"
                             }`}
-                            onClick={() => setPostType("video")}
+                            onClick={() => setType("video")}
                         >
                             Video
                         </div>
@@ -97,7 +124,7 @@ function CreatePost() {
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                         />
-                        {postType === "text" && (
+                        {type === "text" && (
                             <textarea
                                 name="text"
                                 id="text"
@@ -108,7 +135,7 @@ function CreatePost() {
                             ></textarea>
                         )}
                         {/* If post type is image, display file input. If image has already been uploaded, display image preview */}
-                        {postType === "image" && (
+                        {type === "image" && (
                             <div className="flex justify-center items-center min-h-[8rem] input-border">
                                 {image ? (
                                     <div className="flex justify-center items-center min-h-[8rem]">
@@ -131,7 +158,7 @@ function CreatePost() {
                             </div>
                         )}
                         {/* If post type is video, display file input. If video has already been uploaded, display video preview */}
-                        {postType === "video" && (
+                        {type === "video" && (
                             <div className="flex justify-center items-center min-h-[8rem] input-border">
                                 {video ? (
                                     <div className="flex justify-center items-center min-h-[8rem]">
@@ -184,7 +211,7 @@ function CreatePost() {
                             </button>
                             <button
                                 type="submit"
-                                onClick={e => e.preventDefault()}
+                                onClick={submitPost}
                                 className="text-white border-blue-500 bg-blue-500"
                             >
                                 Post
