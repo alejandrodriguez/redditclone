@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore, collection } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -13,8 +14,11 @@ const firebaseConfig = {
 
 const backend = initializeApp(firebaseConfig);
 
+// Auth
+export const auth = getAuth();
+
 // Firebase Firestore (Posts)
-const db = getFirestore();
+export const db = getFirestore();
 export const posts = collection(db, "posts");
 
 // Firebase Cloud Storage (Images and Videos)
