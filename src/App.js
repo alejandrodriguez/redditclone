@@ -1,9 +1,10 @@
 import CreatePost from "./components/CreatePost";
+import Votes from "./components/Votes";
 
 function App() {
     return (
         <div className="App">
-            <CreatePost />
+            <Votes votes={1000} />
         </div>
     );
 }
