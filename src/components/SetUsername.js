@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { auth } from "../firebaseConfig";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function SetUsername(props) {
@@ -23,7 +24,30 @@ function SetUsername(props) {
         else if (!auth.currentUser && !email) {
             navigate("/signup");
         }
-    }, [navigate]);
+    }, [navigate, email]);
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    async function submitForm(e) {
+        e.preventDefault();
+        // Verify form is filled out correctly
+        if (
+            username.length < 3 ||
+            username.length > 20 ||
+            (email && password.length < 8) ||
+            (email && password.length > 20)
+        ) {
+            return;
+        }
+        // Create user if user is signing up with email and password
+        if (email) {
+            await createUserWithEmailAndPassword(auth, email, password);
+        }
+        // Add username to user in Firebase
+        await updateProfile(auth.currentUser, { displayName: `u/${username}` });
+        navigate("/");
+    }
 
     return (
         <div className="min-h-screen bg-white relative flex flex-col">
@@ -43,6 +67,7 @@ function SetUsername(props) {
                         placeholder="CHOOSE A USERNAME"
                         minLength={3}
                         maxLength={20}
+                        onChange={e => setUsername(e.target.value)}
                     />
                     {/* Display password field if applicable */}
                     {email && (
@@ -52,6 +77,7 @@ function SetUsername(props) {
                             placeholder="PASSWORD"
                             minLength={8}
                             maxLength={20}
+                            onChange={e => setPassword(e.target.value)}
                         />
                     )}
                 </div>
@@ -59,6 +85,7 @@ function SetUsername(props) {
                     <button
                         type="submit"
                         className="block uppercase text-center py-2 px-4 bg-blue-600 border-1 border-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:border-blue-500"
+                        onClick={submitForm}
                     >
                         Sign Up
                     </button>

@@ -22,7 +22,7 @@ function App() {
         }
     }, [navigate]);
 
-    return <div className="App">Reddit</div>;
+    return <div className="App">Hello {auth.currentUser.displayName}</div>;
 }
 
 export default App;
