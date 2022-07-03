@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import { auth } from "./firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import CreatePost from "./components/CreatePost";
-import SignUp from "./components/SignUp";
-import Votes from "./components/Votes";
 
 function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        console.log(auth.currentUser);
         // Redirect to sign up page if no user logged in
         if (!auth.currentUser) {
             navigate("/signup");
@@ -22,7 +20,11 @@ function App() {
         }
     }, [navigate]);
 
-    return <div className="App">Hello {auth.currentUser.displayName}</div>;
+    return (
+        <div className="App">
+            Hello {auth.currentUser && auth.currentUser.displayName}
+        </div>
+    );
 }
 
 export default App;

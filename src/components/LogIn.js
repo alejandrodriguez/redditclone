@@ -5,12 +5,14 @@ import { auth } from "../firebaseConfig";
 import {
     GoogleAuthProvider,
     signInWithPopup,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signInWithEmailAndPassword
 } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 
-function SignUp() {
+function LogIn() {
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     async function signInWithGoogle() {
         const provider = new GoogleAuthProvider();
@@ -28,20 +30,24 @@ function SignUp() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
-                navigate("/signup/setusername");
+                navigate("/");
             }
         });
         return unsubscribe;
     }, [navigate]);
 
-    function submitEmailAndRedirect(e) {
-        e.preventDefault();
-        // Check validity of email
-        const re =
-            // eslint-disable-next-line no-useless-escape
-            /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        if (re.test(email)) {
-            navigate("/signup/setusername", { state: { email } });
+    async function signInWithEmail(e) {
+        try {
+            e.preventDefault();
+            // Check validity of email
+            const re =
+                // eslint-disable-next-line no-useless-escape
+                /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+            if (re.test(email) && password.length < 8 && password.length < 20) {
+                await signInWithEmailAndPassword(auth, email, password);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -55,7 +61,7 @@ function SignUp() {
                 />
             </div>
             <div className="w-80 self-center">
-                <h2 className="font-bold mb-3">Sign up</h2>
+                <h2 className="font-bold mb-3">Log in</h2>
                 <p className="text-sm mb-12">
                     <strong className="text-red-500">DISCLAIMER:</strong>{" "}
                     <span className="font-bold">
@@ -84,21 +90,28 @@ function SignUp() {
                         onChange={e => setEmail(e.target.value)}
                         required
                     />
+                    <input
+                        className="w-full border-gray-400 border-1 rounded py-2 px-4 mb-2 outline-none focus:border-gray-500"
+                        type="password"
+                        placeholder="PASSWORD"
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                    />
                     <button
                         type="submit"
                         className="block uppercase text-center py-2 px-4 bg-blue-600 border-1 border-blue-600 text-white font-bold rounded hover:bg-blue-500 hover:border-blue-500 w-full mb-8"
-                        onClick={submitEmailAndRedirect}
+                        onClick={signInWithEmail}
                     >
-                        Continue
+                        Log In
                     </button>
                 </form>
                 <p className="text-sm w-full">
-                    Already a fake redditor?{" "}
+                    New to fake reddit?{" "}
                     <Link
-                        to="/login"
+                        to="/signup"
                         className="uppercase text-blue-600 hover:text-blue-500 font-bold"
                     >
-                        Log In
+                        Sign Up
                     </Link>
                 </p>
             </div>
@@ -106,4 +119,4 @@ function SignUp() {
     );
 }
 
-export default SignUp;
+export default LogIn;
