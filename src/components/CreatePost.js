@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { db, posts, storage } from "../firebaseConfig";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { auth, db, storage } from "../firebaseConfig";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    serverTimestamp
+} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uniqid from "uniqid";
 
@@ -62,15 +67,26 @@ function CreatePost() {
 
     async function submitPost(e) {
         e.preventDefault();
+        // Reject if required fields remain unfilled
+        if (
+            !subreddit ||
+            !title ||
+            (type === "text" && !body) ||
+            (type === "image" && !image) ||
+            (type === "video" && !video)
+        ) {
+            return;
+        }
         const post = {
-            subreddit,
-            author: null,
+            subreddit: subreddit.value,
+            author: auth.currentUser.uid,
             type,
             title,
             spoiler,
             NSFW,
             body: null,
-            src: null
+            src: null,
+            timeCreated: serverTimestamp()
         };
         if (type === "text") {
             post.body = body;
@@ -85,7 +101,10 @@ function CreatePost() {
             }
             post.src = await getDownloadURL(fileRef);
         }
-        await addDoc(posts, post);
+        await addDoc(
+            collection(db, `subreddits/${post.subreddit}/posts`),
+            post
+        );
     }
 
     return (

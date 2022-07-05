@@ -19,7 +19,6 @@ export const auth = getAuth();
 
 // Firebase Firestore (Posts)
 export const db = getFirestore();
-export const posts = collection(db, "posts");
 
 // Firebase Cloud Storage (Images and Videos)
 export const storage = getStorage();

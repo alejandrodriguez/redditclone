@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { auth } from "./firebaseConfig";
+import React, { useState, useEffect } from "react";
+import { auth, db } from "./firebaseConfig";
 import { signOut } from "firebase/auth";
+import { getDocs, collection } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(auth.currentUser);
         // Redirect to sign up page if no user logged in
         if (!auth.currentUser) {
             navigate("/signup");
@@ -17,6 +17,25 @@ function App() {
             navigate("/signup/setusername");
         }
     }, [navigate]);
+
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        async function retrievePosts() {
+            const postArr = [];
+            const querySnapshot = await getDocs(collection(db, "subreddits"));
+            querySnapshot.forEach(async subreddit => {
+                const postsSnapshot = await getDocs(
+                    collection(db, `subreddits/${subreddit.id}/posts`)
+                );
+                postsSnapshot.forEach(post => {
+                    postArr.push(post.data());
+                });
+            });
+            setPosts(postArr);
+        }
+        retrievePosts();
+    }, []);
 
     return (
         <div className="App">
