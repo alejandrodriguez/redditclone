@@ -6,7 +6,8 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
     onAuthStateChanged,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    updateProfile
 } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -30,7 +31,16 @@ function LogIn() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
-                navigate("/");
+                console.log(user);
+                if (
+                    user.metadata.creationTime === user.metadata.lastSignInTime
+                ) {
+                    updateProfile(user, { displayName: "" }).then(() =>
+                        navigate("/signup/setusername")
+                    );
+                } else {
+                    navigate("/");
+                }
             }
         });
         return unsubscribe;

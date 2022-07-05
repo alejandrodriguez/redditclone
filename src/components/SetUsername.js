@@ -17,7 +17,7 @@ function SetUsername(props) {
 
     useEffect(() => {
         // Redirect if user is signed in and already has username
-        if (auth.currentUser && auth.currentUser.displayName.includes("u/")) {
+        if (auth.currentUser && auth.currentUser.displayName) {
             navigate("/");
         }
         // Redirect if user is not signed in and email has not been collected
@@ -45,7 +45,7 @@ function SetUsername(props) {
             await createUserWithEmailAndPassword(auth, email, password);
         }
         // Add username to user in Firebase
-        await updateProfile(auth.currentUser, { displayName: `u/${username}` });
+        await updateProfile(auth.currentUser, { displayName: username });
         navigate("/");
     }
 

@@ -53,10 +53,13 @@ function CreatePost() {
         e.preventDefault();
         const post = {
             subreddit,
+            author: null,
             type,
             title,
             spoiler,
-            NSFW
+            NSFW,
+            body: null,
+            src: null
         };
         if (type === "text") {
             post.body = body;

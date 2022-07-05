@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { auth } from "./firebaseConfig";
+import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 function App() {
@@ -12,17 +13,24 @@ function App() {
             navigate("/signup");
         }
         // Redirect to set username page if user logged in without reddit username
-        else if (
-            auth.currentUser &&
-            !auth.currentUser.displayName.includes("u/")
-        ) {
+        else if (auth.currentUser && !auth.currentUser.displayName) {
             navigate("/signup/setusername");
         }
     }, [navigate]);
 
     return (
         <div className="App">
-            Hello {auth.currentUser && auth.currentUser.displayName}
+            <h1>
+                Hello {auth.currentUser && `u/${auth.currentUser.displayName}`}
+            </h1>
+            <button
+                onClick={async () => {
+                    await signOut(auth);
+                    navigate("/login");
+                }}
+            >
+                Sign Out
+            </button>
         </div>
     );
 }
