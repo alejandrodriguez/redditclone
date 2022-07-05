@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { posts, storage } from "../firebaseConfig";
-import { addDoc } from "firebase/firestore";
+import { db, posts, storage } from "../firebaseConfig";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uniqid from "uniqid";
 
 function CreatePost() {
-    const mockSubreddits = [
-        { value: "funny", label: "r/funny" },
-        { value: "ProgrammerHumor", label: "r/ProgrammerHumor" },
-        { value: "ThatsInsane", label: "r/ThatsInsane" },
-        { value: "news", label: "r/news" },
-        { value: "science", label: "r/science" }
-    ];
+    const [subredditOptions, setSubredditOptions] = useState([]);
+
+    // Retrieve subreddits from the backend and set subreddit options
+    useEffect(() => {
+        async function retrieveSubreddits() {
+            const subredditArr = [];
+            const querySnapshot = await getDocs(collection(db, "subreddits"));
+            querySnapshot.forEach(doc => {
+                const subredditOption = {
+                    value: doc.id,
+                    label: `r/${doc.id}`
+                };
+                subredditArr.push(subredditOption);
+            });
+            setSubredditOptions(subredditArr);
+        }
+        retrieveSubreddits();
+    }, []);
 
     const [subreddit, setSubreddit] = useState(null);
 
@@ -85,7 +96,7 @@ function CreatePost() {
                 </h2>
                 <Select
                     className="w-72 mb-2"
-                    options={mockSubreddits}
+                    options={subredditOptions}
                     placeholder="Choose a community"
                     onChange={setSubreddit}
                 />

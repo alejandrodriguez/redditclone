@@ -4,6 +4,7 @@ import App from "../App";
 import SignUp from "./SignUp";
 import LogIn from "./LogIn";
 import SetUsername from "./SetUsername";
+import CreatePost from "./CreatePost";
 
 function Router() {
     return (
@@ -13,6 +14,7 @@ function Router() {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/signup/setusername" element={<SetUsername />} />
+                <Route path="/createpost" element={<CreatePost />} />
             </Routes>
         </BrowserRouter>
     );
