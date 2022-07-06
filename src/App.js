@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "./firebaseConfig";
 import { signOut } from "firebase/auth";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, query, collection, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Votes from "./components/Votes";
 
@@ -32,9 +32,11 @@ function App() {
                 subredditArr.push(subreddit.id)
             );
             for (const subreddit of subredditArr) {
-                const postsSnapshot = await getDocs(
-                    collection(db, `subreddits/${subreddit}/posts`)
+                const q = query(
+                    collection(db, `subreddits/${subreddit}/posts`),
+                    orderBy("timeCreated", "desc")
                 );
+                const postsSnapshot = await getDocs(q);
                 postsSnapshot.forEach(post => {
                     loadedPosts.push(post.data());
                 });
@@ -45,6 +47,9 @@ function App() {
             setPosts(retrievedPosts);
         });
     }, []);
+
+    const [upvoted, setUpvoted] = useState(false);
+    const [downvoted, setDownvoted] = useState(false);
 
     return (
         <div className="App">
@@ -59,22 +64,43 @@ function App() {
             >
                 Sign Out
             </button>
-            {posts.map((post, index) => (
-                <div className="flex border border-black" key={index}>
-                    <Votes votes={post.votes} />
-                    <div>
-                        <h4>{`r/${post.subreddit}`}</h4>
-                        <h2>{post.title}</h2>
-                        <div>
-                            {post.type === "text" && <p>{post.body}</p>}
-                            {(post.type === "image" ||
-                                post.type === "video") && (
-                                <img src={post.src} alt="User uploaded" />
-                            )}
+            <main className="m-6">
+                {posts.map((post, index) => (
+                    <div
+                        className="flex border border-gray-300 hover:border-gray-500 rounded m-auto max-w-[1000px] bg-white my-3 p-2 hover:cursor-pointer"
+                        key={index}
+                    >
+                        <Votes
+                            votes={post.votes}
+                            upvote={() => setUpvoted(!upvoted)}
+                            upvoted={upvoted}
+                            downvote={() => setDownvoted(!downvoted)}
+                            downvoted={downvoted}
+                        />
+                        <div className="flex-1 flex flex-col ml-4">
+                            <div className="flex text-xs items-center gap-1 mb-1">
+                                <h4 className="font-bold">{`r/${post.subreddit}`}</h4>
+                                <p className="text-gray-500">
+                                    •{console.log(post.timeCreated)}
+                                </p>
+                                <p className="text-gray-500">{`Posted by u/${post.author.displayName}`}</p>
+                            </div>
+                            <h2 className="font-bold text-lg">{post.title}</h2>
+                            <div className="self-center w-full">
+                                {post.type === "text" && <p>{post.body}</p>}
+                                {(post.type === "image" ||
+                                    post.type === "video") && (
+                                    <img
+                                        src={post.src}
+                                        alt="User uploaded"
+                                        className="max-h-[600px] object-contain m-auto"
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </main>
         </div>
     );
 }
