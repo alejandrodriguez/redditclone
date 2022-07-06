@@ -5,6 +5,7 @@ import SignUp from "./SignUp";
 import LogIn from "./LogIn";
 import SetUsername from "./SetUsername";
 import CreatePost from "./CreatePost";
+import Navbar from "./Navbar";
 
 function Router() {
     return (
@@ -12,9 +13,10 @@ function Router() {
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/login" element={<LogIn />} />
                 <Route path="/signup/setusername" element={<SetUsername />} />
+                <Route path="/login" element={<LogIn />} />
                 <Route path="/createpost" element={<CreatePost />} />
+                <Route path="/r/:subreddit" element={<Navbar />} />
             </Routes>
         </BrowserRouter>
     );

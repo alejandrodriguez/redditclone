@@ -4,6 +4,7 @@ import { signOut } from "firebase/auth";
 import { getDocs, query, collection, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Votes from "./components/Votes";
+import Navbar from "./components/Navbar";
 
 function App() {
     const navigate = useNavigate();
@@ -64,6 +65,7 @@ function App() {
             >
                 Sign Out
             </button>
+            <Navbar />
             <main className="m-6">
                 {posts.map((post, index) => (
                     <div
