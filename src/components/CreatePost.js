@@ -40,7 +40,11 @@ function CreatePost() {
 
     const [image, setImage] = useState(null);
 
+    const [imageDataURL, setImageDataURL] = useState(null);
+
     const [video, setVideo] = useState(null);
+
+    const [videoDataURL, setVideoDataURL] = useState(null);
 
     const [spoiler, setSpoiler] = useState(false);
 
@@ -57,9 +61,11 @@ function CreatePost() {
         const reader = new FileReader();
         reader.onload = () => {
             if (file.type.includes("image")) {
-                setImage(reader.result);
+                setImageDataURL(reader.result);
+                setImage(file);
             } else if (file.type.includes("video")) {
-                setVideo(reader.result);
+                setVideoDataURL(reader.result);
+                setVideo(file);
             }
         };
         reader.readAsDataURL(file);
@@ -84,6 +90,7 @@ function CreatePost() {
             title,
             spoiler,
             NSFW,
+            votes: 0,
             body: null,
             src: null,
             timeCreated: serverTimestamp()
@@ -173,7 +180,7 @@ function CreatePost() {
                                 {image ? (
                                     <div className="flex justify-center items-center min-h-[8rem]">
                                         <img
-                                            src={image}
+                                            src={imageDataURL}
                                             alt="uploaded by user"
                                             className="max-h-96 max-w-full"
                                         />
@@ -200,7 +207,7 @@ function CreatePost() {
                                             width={960}
                                             height={720}
                                         >
-                                            <source src={video} />
+                                            <source src={videoDataURL} />
                                         </video>
                                     </div>
                                 ) : (

@@ -3,6 +3,7 @@ import { auth, db } from "./firebaseConfig";
 import { signOut } from "firebase/auth";
 import { getDocs, collection } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import Votes from "./components/Votes";
 
 function App() {
     const navigate = useNavigate();
@@ -22,19 +23,27 @@ function App() {
 
     useEffect(() => {
         async function retrievePosts() {
-            const postArr = [];
-            const querySnapshot = await getDocs(collection(db, "subreddits"));
-            querySnapshot.forEach(async subreddit => {
+            const loadedPosts = [];
+            const subredditSnapshot = await getDocs(
+                collection(db, "subreddits")
+            );
+            const subredditArr = [];
+            subredditSnapshot.forEach(subreddit =>
+                subredditArr.push(subreddit.id)
+            );
+            for (const subreddit of subredditArr) {
                 const postsSnapshot = await getDocs(
-                    collection(db, `subreddits/${subreddit.id}/posts`)
+                    collection(db, `subreddits/${subreddit}/posts`)
                 );
                 postsSnapshot.forEach(post => {
-                    postArr.push(post.data());
+                    loadedPosts.push(post.data());
                 });
-            });
-            setPosts(postArr);
+            }
+            return loadedPosts;
         }
-        retrievePosts();
+        retrievePosts().then(retrievedPosts => {
+            setPosts(retrievedPosts);
+        });
     }, []);
 
     return (
@@ -50,6 +59,22 @@ function App() {
             >
                 Sign Out
             </button>
+            {posts.map((post, index) => (
+                <div className="flex border border-black" key={index}>
+                    <Votes votes={post.votes} />
+                    <div>
+                        <h4>{`r/${post.subreddit}`}</h4>
+                        <h2>{post.title}</h2>
+                        <div>
+                            {post.type === "text" && <p>{post.body}</p>}
+                            {(post.type === "image" ||
+                                post.type === "video") && (
+                                <img src={post.src} alt="User uploaded" />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }

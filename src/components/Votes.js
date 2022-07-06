@@ -2,7 +2,7 @@ import React from "react";
 
 function Votes(props) {
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center">
             {/* Upvote Outline */}
             <svg
                 className="cursor-pointer"
