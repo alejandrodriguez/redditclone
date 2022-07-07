@@ -121,7 +121,7 @@ function App() {
                                     />
                                 )}
                                 {post.type === "video" && (
-                                    <video controls>
+                                    <video controls width="100%">
                                         <source src={post.src} />
                                     </video>
                                 )}

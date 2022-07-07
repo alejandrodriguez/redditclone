@@ -10,11 +10,11 @@ function Router() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/r/:subreddit" element={<App />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signup/setusername" element={<SetUsername />} />
                 <Route path="/login" element={<LogIn />} />
+                <Route path="/" element={<App />} />
+                <Route path="/r/:subreddit" element={<App />} />
                 <Route path="/createpost" element={<CreatePost />} />
             </Routes>
         </BrowserRouter>

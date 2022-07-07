@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uniqid from "uniqid";
+import Navbar from "./Navbar";
 
 function CreatePost() {
     const navigate = useNavigate();
@@ -130,6 +131,7 @@ function CreatePost() {
 
     return (
         <div className="CreatePost">
+            <Navbar />
             <div className="max-w-4xl m-auto">
                 <h2 className="text-lg font-bold border-b-white border-b-1 mb-4 py-3">
                     Create a post
