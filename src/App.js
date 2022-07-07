@@ -7,7 +7,8 @@ import {
     orderBy,
     collectionGroup
 } from "firebase/firestore";
-import { useNavigate, useParams } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import Votes from "./components/Votes";
 import Navbar from "./components/Navbar";
 
@@ -15,14 +16,14 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Redirect to sign up page if no user logged in
-        if (!auth.currentUser) {
-            navigate("/signup");
-        }
-        // Redirect to set username page if user logged in without reddit username
-        else if (auth.currentUser && !auth.currentUser.displayName) {
-            navigate("/signup/setusername");
-        }
+        const unsubscribe = onAuthStateChanged(auth, user => {
+            if (!user) {
+                navigate("/signup");
+            } else if (user && !user.displayName) {
+                navigate("/signup/setusername");
+            }
+            return unsubscribe;
+        });
     }, [navigate]);
 
     const [posts, setPosts] = useState([]);
@@ -102,7 +103,10 @@ function App() {
                                 </div>
                             )}
                             <div className="flex text-xs items-center gap-1 mb-1">
-                                <h4 className="font-bold">{`r/${post.subreddit}`}</h4>
+                                <Link
+                                    to={`/r/${post.subreddit}`}
+                                    className="font-bold hover:underline"
+                                >{`r/${post.subreddit}`}</Link>
                                 <p className="text-gray-500">•</p>
                                 <p className="text-gray-500">{`Posted by u/${post.author.displayName}`}</p>
                             </div>

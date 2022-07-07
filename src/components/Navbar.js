@@ -5,6 +5,7 @@ import { signOut } from "firebase/auth";
 import { getDocs, collection } from "firebase/firestore";
 import logo from "../img/logo-navbar.png";
 import SubredditLinks from "./SubredditLinks";
+import ProfileSelect from "./ProfileSelect";
 
 function Navbar() {
     const [subredditOptions, setSubredditOptions] = useState([]);
@@ -54,6 +55,7 @@ function Navbar() {
                     </svg>
                 </abbr>
             </Link>
+            <ProfileSelect />
             <button
                 onClick={async () => {
                     await signOut(auth);
@@ -67,3 +69,5 @@ function Navbar() {
 }
 
 export default Navbar;
+
+// Math.ceil(Math.random() * 25)

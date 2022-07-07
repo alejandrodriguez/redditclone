@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import loginart from "../img/log-in-art.png";
 import googleicon from "../img/google-icon.png";
-import { auth } from "../firebaseConfig";
+import { auth, storage } from "../firebaseConfig";
 import {
     GoogleAuthProvider,
     signInWithPopup,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    updateProfile
+    updateProfile,
+    getAdditionalUserInfo
 } from "firebase/auth";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useNavigate, Link } from "react-router-dom";
 
 function LogIn() {
@@ -16,34 +18,37 @@ function LogIn() {
     const [password, setPassword] = useState("");
 
     async function signInWithGoogle() {
+        // Sign In/Sign Up
         const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
+        const userCredential = await signInWithPopup(auth, provider);
+        // If new user, reset display name and set profile pic. Redirect to setusername. Otherwise, send home.
+        if (getAdditionalUserInfo(userCredential).isNewUser) {
+            await updateProfile(auth.currentUser, {
+                displayName: "",
+                photoURL: await getDownloadURL(
+                    ref(
+                        storage,
+                        `profile-pics/default-${Math.ceil(
+                            Math.random() * 25
+                        )}.png`
+                    )
+                )
+            });
+            navigate("/signup/setusername");
+        } else {
+            navigate("/");
+        }
     }
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (auth.currentUser) {
-            navigate("/");
-        }
-    }, [navigate]);
-
-    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
-                console.log(user);
-                if (
-                    user.metadata.creationTime === user.metadata.lastSignInTime
-                ) {
-                    updateProfile(user, { displayName: "" }).then(() =>
-                        navigate("/signup/setusername")
-                    );
-                } else {
-                    navigate("/");
-                }
+                navigate("/");
             }
         });
-        return unsubscribe;
+        unsubscribe();
     }, [navigate]);
 
     async function signInWithEmail(e) {
