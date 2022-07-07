@@ -17,9 +17,8 @@ function SubredditLinks(props) {
     return (
         <Select
             placeholder="Subreddit"
-            className="w-72 mb-2"
+            className="w-72"
             isSearchable={false}
-            closeMenuOnSelect={false}
             options={props.options}
             value={
                 // Set selected value to current subreddit

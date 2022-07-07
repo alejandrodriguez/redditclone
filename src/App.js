@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "./firebaseConfig";
-import { signOut } from "firebase/auth";
-import { getDocs, query, collection, orderBy } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import {
+    getDocs,
+    query,
+    collection,
+    orderBy,
+    collectionGroup
+} from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
 import Votes from "./components/Votes";
 import Navbar from "./components/Navbar";
 
@@ -22,50 +27,44 @@ function App() {
 
     const [posts, setPosts] = useState([]);
 
+    const params = useParams();
+
     useEffect(() => {
         async function retrievePosts() {
             const loadedPosts = [];
-            const subredditSnapshot = await getDocs(
-                collection(db, "subreddits")
-            );
-            const subredditArr = [];
-            subredditSnapshot.forEach(subreddit =>
-                subredditArr.push(subreddit.id)
-            );
-            for (const subreddit of subredditArr) {
-                const q = query(
-                    collection(db, `subreddits/${subreddit}/posts`),
+            let q;
+            if (params.subreddit) {
+                q = query(
+                    collection(db, `subreddits/${params.subreddit}/posts`),
                     orderBy("timeCreated", "desc")
                 );
-                const postsSnapshot = await getDocs(q);
-                postsSnapshot.forEach(post => {
-                    loadedPosts.push(post.data());
-                });
+            } else {
+                q = query(
+                    collectionGroup(db, "posts"),
+                    orderBy("timeCreated", "desc")
+                );
             }
+            const postsSnapshot = await getDocs(q);
+            postsSnapshot.forEach(post => {
+                loadedPosts.push(post.data());
+            });
             return loadedPosts;
         }
-        retrievePosts().then(retrievedPosts => {
-            setPosts(retrievedPosts);
-        });
-    }, []);
+        retrievePosts()
+            .then(retrievedPosts => {
+                setPosts(retrievedPosts);
+            })
+            .catch(err => console.log(err));
+    }, [params]);
 
     const [upvoted, setUpvoted] = useState(false);
     const [downvoted, setDownvoted] = useState(false);
 
     return (
         <div className="App">
-            <h1>
-                Hello {auth.currentUser && `u/${auth.currentUser.displayName}`}
-            </h1>
-            <button
-                onClick={async () => {
-                    await signOut(auth);
-                    navigate("/login");
-                }}
-            >
-                Sign Out
-            </button>
-            <Navbar />
+            <header className="sticky top-0 w-full">
+                <Navbar />
+            </header>
             <main className="m-6">
                 {posts.map((post, index) => (
                     <div
@@ -82,21 +81,23 @@ function App() {
                         <div className="flex-1 flex flex-col ml-4">
                             <div className="flex text-xs items-center gap-1 mb-1">
                                 <h4 className="font-bold">{`r/${post.subreddit}`}</h4>
-                                <p className="text-gray-500">
-                                    •{console.log(post.timeCreated)}
-                                </p>
+                                <p className="text-gray-500">•</p>
                                 <p className="text-gray-500">{`Posted by u/${post.author.displayName}`}</p>
                             </div>
                             <h2 className="font-bold text-lg">{post.title}</h2>
                             <div className="self-center w-full">
                                 {post.type === "text" && <p>{post.body}</p>}
-                                {(post.type === "image" ||
-                                    post.type === "video") && (
+                                {post.type === "image" && (
                                     <img
                                         src={post.src}
                                         alt="User uploaded"
                                         className="max-h-[600px] object-contain m-auto"
                                     />
+                                )}
+                                {post.type === "video" && (
+                                    <video controls>
+                                        <source src={post.src} />
+                                    </video>
                                 )}
                             </div>
                         </div>

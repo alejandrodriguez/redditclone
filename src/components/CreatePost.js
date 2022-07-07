@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 import { auth, db, storage } from "../firebaseConfig";
 import {
     collection,
@@ -11,6 +12,14 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uniqid from "uniqid";
 
 function CreatePost() {
+    const navigate = useNavigate();
+    // Redirect to log in page if not signed in
+    useEffect(() => {
+        if (!auth.currentUser) {
+            navigate("/login");
+        }
+    });
+
     const [subredditOptions, setSubredditOptions] = useState([]);
 
     // Retrieve subreddits from the backend and set subreddit options
@@ -18,10 +27,10 @@ function CreatePost() {
         async function retrieveSubreddits() {
             const subredditArr = [];
             const querySnapshot = await getDocs(collection(db, "subreddits"));
-            querySnapshot.forEach(doc => {
+            querySnapshot.forEach(subreddit => {
                 const subredditOption = {
-                    value: doc.id,
-                    label: `r/${doc.id}`
+                    value: subreddit.id,
+                    label: `r/${subreddit.id}`
                 };
                 subredditArr.push(subredditOption);
             });
@@ -85,7 +94,10 @@ function CreatePost() {
         }
         const post = {
             subreddit: subreddit.value,
-            author: auth.currentUser.uid,
+            author: {
+                id: auth.currentUser.uid,
+                displayName: auth.currentUser.displayName
+            },
             type,
             title,
             spoiler,
@@ -112,6 +124,7 @@ function CreatePost() {
             collection(db, `subreddits/${post.subreddit}/posts`),
             post
         );
+        navigate("/");
     }
 
     return (
@@ -246,6 +259,7 @@ function CreatePost() {
                             <button
                                 type="button"
                                 className="text-blue-500 border-blue-500"
+                                onClick={() => navigate(-1)}
                             >
                                 Cancel
                             </button>
