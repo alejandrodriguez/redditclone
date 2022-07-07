@@ -105,7 +105,8 @@ function CreatePost() {
             votes: 0,
             body: null,
             src: null,
-            timeCreated: serverTimestamp()
+            timeCreated: serverTimestamp(),
+            pinned: false
         };
         if (type === "text") {
             post.body = body;

@@ -36,11 +36,13 @@ function App() {
             if (params.subreddit) {
                 q = query(
                     collection(db, `subreddits/${params.subreddit}/posts`),
+                    orderBy("pinned", "desc"),
                     orderBy("timeCreated", "desc")
                 );
             } else {
                 q = query(
                     collectionGroup(db, "posts"),
+                    orderBy("pinned", "desc"),
                     orderBy("timeCreated", "desc")
                 );
             }
@@ -79,6 +81,26 @@ function App() {
                             downvoted={downvoted}
                         />
                         <div className="flex-1 flex flex-col ml-4">
+                            {post.pinned && (
+                                <div className="flex items-center gap-1 ml-[-0.5rem]">
+                                    <svg
+                                        className="text-green-500 opacity-70"
+                                        style={{
+                                            width: "22px",
+                                            height: "22px"
+                                        }}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            fill="currentColor"
+                                            d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"
+                                        />
+                                    </svg>
+                                    <p className="uppercase text-xs text-gray-500 font-bold">
+                                        Pinned by Moderators
+                                    </p>
+                                </div>
+                            )}
                             <div className="flex text-xs items-center gap-1 mb-1">
                                 <h4 className="font-bold">{`r/${post.subreddit}`}</h4>
                                 <p className="text-gray-500">•</p>
