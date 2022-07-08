@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import Navbar from "./Navbar";
 
 function CreateCommunity() {
@@ -24,11 +24,15 @@ function CreateCommunity() {
         }
         e.target.disabled = true;
         try {
-            await setDoc(
-                doc(db, "subreddits", subredditName),
-                {},
-                { merge: true }
+            // Check if subreddit already exists
+            const subredditRef = await getDoc(
+                doc(db, "subreddits", subredditName)
             );
+            if (subredditRef.exists) {
+                throw new Error("Subreddit already exists");
+            }
+            // Create new subreddit
+            await setDoc(doc(db, "subreddits", subredditName), {});
             navigate(`/r/${subredditName}`);
         } catch (error) {
             console.log(error);

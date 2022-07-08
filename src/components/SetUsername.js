@@ -1,8 +1,10 @@
 // TODO add messages on DOM for form verification
 
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebaseConfig";
+import { auth, db, storage } from "../firebaseConfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function SetUsername(props) {
@@ -40,13 +42,39 @@ function SetUsername(props) {
         ) {
             return;
         }
-        // Create user if user is signing up with email and password
-        if (email) {
-            await createUserWithEmailAndPassword(auth, email, password);
+        e.target.disabled = true;
+        try {
+            // Check if username already exists
+            const usernameRef = await getDoc(doc(db, `users/${username}`));
+            if (usernameRef.exists) {
+                throw new Error("Username already exists");
+            }
+            // Create user if user is signing up with email and password
+            if (email) {
+                await createUserWithEmailAndPassword(auth, email, password);
+            }
+            // Add username and profile pic to user in Firebase
+            await updateProfile(auth.currentUser, {
+                displayName: username,
+                photoURL: await getDownloadURL(
+                    ref(
+                        storage,
+                        `profile-pics/default-${Math.ceil(
+                            Math.random() * 25
+                        )}.png`
+                    )
+                )
+            });
+            // Add username doc in user collection
+            await setDoc(doc(db, "users", username), {
+                displayName: auth.currentUser.displayName,
+                uid: auth.currentUser.uid
+            });
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+            e.target.disabled = false;
         }
-        // Add username to user in Firebase
-        await updateProfile(auth.currentUser, { displayName: username });
-        navigate("/");
     }
 
     return (

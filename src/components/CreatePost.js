@@ -6,7 +6,9 @@ import {
     collection,
     addDoc,
     getDocs,
-    serverTimestamp
+    serverTimestamp,
+    setDoc,
+    doc
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uniqid from "uniqid";
@@ -125,10 +127,23 @@ function CreatePost() {
                 }
                 post.src = await getDownloadURL(fileRef);
             }
-            await addDoc(
+            // Submit post to database
+            const postRef = await addDoc(
                 collection(db, `subreddits/${post.subreddit}/posts`),
                 post
             );
+            // Add post info to user collection
+            setDoc(
+                doc(
+                    db,
+                    "users",
+                    auth.currentUser.displayName,
+                    "posts",
+                    postRef.id
+                ),
+                { id: postRef.id, path: postRef.path }
+            );
+
             navigate("/");
         } catch (error) {
             console.log(error);
