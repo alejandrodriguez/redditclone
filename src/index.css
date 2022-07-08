@@ -16,8 +16,9 @@ body {
     @apply grow border-1 border-gray-200 p-3 text-center cursor-pointer text-gray-500;
 }
 
-.CreatePost button {
-    @apply border-1 rounded-3xl px-4 py-1 mr-1 font-bold;
+.CreatePost button,
+.CreateCommunity button {
+    @apply border-1 rounded-3xl px-4 py-1 mr-1 font-bold hover:opacity-90;
 }
 
 .input-border {

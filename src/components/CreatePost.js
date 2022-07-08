@@ -93,40 +93,47 @@ function CreatePost() {
         ) {
             return;
         }
-        const post = {
-            subreddit: subreddit.value,
-            author: {
-                id: auth.currentUser.uid,
-                displayName: auth.currentUser.displayName
-            },
-            type,
-            title,
-            spoiler,
-            NSFW,
-            votes: 0,
-            body: null,
-            src: null,
-            timeCreated: serverTimestamp(),
-            pinned: false
-        };
-        if (type === "text") {
-            post.body = body;
-        } else {
-            let fileRef;
-            if (type === "image") {
-                fileRef = ref(storage, `images/${uniqid()}`);
-                await uploadBytes(fileRef, image, "data_url");
+        // Disable Post button while post is being uploaded
+        e.target.disabled = true;
+        try {
+            const post = {
+                subreddit: subreddit.value,
+                author: {
+                    id: auth.currentUser.uid,
+                    displayName: auth.currentUser.displayName
+                },
+                type,
+                title,
+                spoiler,
+                NSFW,
+                votes: 0,
+                body: null,
+                src: null,
+                timeCreated: serverTimestamp(),
+                pinned: false
+            };
+            if (type === "text") {
+                post.body = body;
             } else {
-                fileRef = ref(storage, `videos/${uniqid()}`);
-                await uploadBytes(fileRef, video, "data_url");
+                let fileRef;
+                if (type === "image") {
+                    fileRef = ref(storage, `images/${uniqid()}`);
+                    await uploadBytes(fileRef, image, "data_url");
+                } else {
+                    fileRef = ref(storage, `videos/${uniqid()}`);
+                    await uploadBytes(fileRef, video, "data_url");
+                }
+                post.src = await getDownloadURL(fileRef);
             }
-            post.src = await getDownloadURL(fileRef);
+            await addDoc(
+                collection(db, `subreddits/${post.subreddit}/posts`),
+                post
+            );
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+            e.target.disabled = false;
         }
-        await addDoc(
-            collection(db, `subreddits/${post.subreddit}/posts`),
-            post
-        );
-        navigate("/");
     }
 
     return (

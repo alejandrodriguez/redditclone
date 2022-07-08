@@ -50,7 +50,7 @@ function Navbar() {
                     )
                 },
                 {
-                    value: "createcommunity",
+                    value: "/createcommunity",
                     label: (
                         <div className="flex gap-1 items-center">
                             <svg
@@ -128,5 +128,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
-// Math.ceil(Math.random() * 25)

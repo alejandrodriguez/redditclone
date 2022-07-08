@@ -5,6 +5,7 @@ import SignUp from "./SignUp";
 import LogIn from "./LogIn";
 import SetUsername from "./SetUsername";
 import CreatePost from "./CreatePost";
+import CreateCommunity from "./CreateCommunity";
 
 function Router() {
     return (
@@ -16,6 +17,7 @@ function Router() {
                 <Route path="/" element={<App />} />
                 <Route path="/r/:subreddit" element={<App />} />
                 <Route path="/createpost" element={<CreatePost />} />
+                <Route path="/createcommunity" element={<CreateCommunity />} />
             </Routes>
         </BrowserRouter>
     );

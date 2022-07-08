@@ -2,7 +2,7 @@ import React from "react";
 import Select from "react-select";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-function SubredditLinks(props) {
+function PageSelect(props) {
     const navigate = useNavigate();
     const params = useParams();
     const location = useLocation();
@@ -29,7 +29,6 @@ function SubredditLinks(props) {
                               return option.value === params.subreddit;
                           })
                         : props.options.find(option => {
-                              console.log(location.pathname);
                               return option.value === location.pathname;
                           })
                     : ""
@@ -39,4 +38,4 @@ function SubredditLinks(props) {
     );
 }
 
-export default SubredditLinks;
+export default PageSelect;
