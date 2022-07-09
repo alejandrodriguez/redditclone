@@ -15,6 +15,28 @@ function PageSelect(props) {
         }
     }
 
+    const customStyles = {
+        control: provided => ({
+            ...provided,
+            border: "1px solid white",
+            "&:hover": {
+                border: "1px solid #e5e7eb"
+            },
+            cursor: "pointer"
+        }),
+        dropdownIndicator: provided => ({
+            ...provided,
+            color: "#71717a"
+        }),
+        indicatorSeparator: () => {
+            return {};
+        },
+        option: provided => ({
+            ...provided,
+            cursor: "pointer"
+        })
+    };
+
     return (
         <Select
             placeholder="Subreddit"
@@ -34,6 +56,7 @@ function PageSelect(props) {
                     : ""
             }
             onChange={redirect}
+            styles={customStyles}
         />
     );
 }

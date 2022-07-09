@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { db, auth } from "../firebaseConfig";
-import { signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
+import { db } from "../firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 import logo from "../img/logo-navbar.png";
 import PageSelect from "./PageSelect";
@@ -85,8 +84,6 @@ function Navbar() {
         retrieveSubreddits();
     }, []);
 
-    const navigate = useNavigate();
-
     return (
         <nav className="flex items-center gap-6 bg-white w-full p-2">
             <Link to="/">
@@ -115,14 +112,6 @@ function Navbar() {
                 </abbr>
             </Link>
             <ProfileSelect />
-            <button
-                onClick={async () => {
-                    await signOut(auth);
-                    navigate("/login");
-                }}
-            >
-                Sign Out
-            </button>
         </nav>
     );
 }
