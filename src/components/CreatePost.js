@@ -108,7 +108,7 @@ function CreatePost() {
                 title,
                 spoiler,
                 NSFW,
-                votes: 0,
+                votes: 1, // Post will be automatically liked by user posting
                 body: null,
                 src: null,
                 timeCreated: serverTimestamp(),
@@ -133,7 +133,7 @@ function CreatePost() {
                 post
             );
             // Add post info to user collection
-            setDoc(
+            await setDoc(
                 doc(
                     db,
                     "users",
@@ -143,7 +143,17 @@ function CreatePost() {
                 ),
                 { id: postRef.id, path: postRef.path }
             );
-
+            // Automatically like post
+            await setDoc(
+                doc(
+                    db,
+                    "users",
+                    auth.currentUser.displayName,
+                    "votedPosts",
+                    postRef.id
+                ),
+                { upvoted: true, downvoted: false }
+            );
             navigate("/");
         } catch (error) {
             console.log(error);
