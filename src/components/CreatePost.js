@@ -214,8 +214,8 @@ function CreatePost() {
                         />
                         {type === "text" && (
                             <textarea
-                                name="text"
-                                id="text"
+                                name="body"
+                                id="body"
                                 placeholder="Text (optional)"
                                 className="input-border h-32"
                                 value={body}
@@ -287,8 +287,11 @@ function CreatePost() {
                                     NSFW && "nsfw-active"
                                 }`}
                             >
-                                NSFW
+                                NSFW*
                             </button>
+                        </div>
+                        <div className="text-xs">
+                            *Please do not post anything truly NSFW.
                         </div>
                         <div className="py-3 flex justify-end">
                             <button

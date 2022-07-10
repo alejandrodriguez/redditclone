@@ -2,7 +2,11 @@ import React from "react";
 
 function Votes(props) {
     return (
-        <div className="flex flex-col items-center">
+        <div
+            className={`flex items-center ${
+                props.comment ? "-ml-1" : "flex-col"
+            }`}
+        >
             {/* Upvote Outline */}
             {props.upvoted ? (
                 <svg

@@ -6,6 +6,7 @@ import LogIn from "./LogIn";
 import SetUsername from "./SetUsername";
 import CreatePost from "./CreatePost";
 import CreateCommunity from "./CreateCommunity";
+import Comments from "./Comments";
 
 function Router() {
     return (
@@ -18,6 +19,10 @@ function Router() {
                 <Route path="/r/:subreddit" element={<App />} />
                 <Route path="/createpost" element={<CreatePost />} />
                 <Route path="/createcommunity" element={<CreateCommunity />} />
+                <Route
+                    path="/r/:subreddit/comments/:postid"
+                    element={<Comments />}
+                />
             </Routes>
         </BrowserRouter>
     );

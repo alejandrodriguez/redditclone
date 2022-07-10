@@ -7,7 +7,7 @@ import defaultPic from "../img/default-profile-picture.png";
 
 function ProfileSelect() {
     const [profilePic, setProfilePic] = useState(defaultPic);
-    const [username, setUsername] = useState("redditor");
+    const [username, setUsername] = useState("Loading...");
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
