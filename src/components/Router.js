@@ -10,7 +10,7 @@ import Comments from "./Comments";
 
 function Router() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Routes>
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signup/setusername" element={<SetUsername />} />
