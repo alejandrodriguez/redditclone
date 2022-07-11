@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { db } from "../firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 import logo from "../img/logo-navbar.png";
+import logonotext from "../img/logo-navbar-no-text.png";
 import PageSelect from "./PageSelect";
 import ProfileSelect from "./ProfileSelect";
 
@@ -87,7 +88,16 @@ function Navbar() {
     return (
         <nav className="flex items-center gap-6 bg-white w-full p-2">
             <Link to="/">
-                <img src={logo} alt="Reddit Logo" className="h-8" />
+                <img
+                    src={logo}
+                    alt="Reddit Logo"
+                    className="h-8 min-w-max hidden md:inline"
+                />
+                <img
+                    src={logonotext}
+                    alt="Reddit Logo"
+                    className="h-8 min-w-max md:hidden"
+                />
             </Link>
             <PageSelect options={subredditOptions} />
             <Link

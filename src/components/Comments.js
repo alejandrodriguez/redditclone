@@ -256,9 +256,16 @@ function Comments() {
                                 </button>
                             </form>
                         </div>
-                        {comments.map((comment, index) => (
-                            <Comment comment={comment} key={index} />
-                        ))}
+                        {comments.length === 0 ? (
+                            <p className="text-center text-gray-500 py-16">
+                                No comments yet. Be the first to share what you
+                                think!
+                            </p>
+                        ) : (
+                            comments.map((comment, index) => (
+                                <Comment comment={comment} key={index} />
+                            ))
+                        )}
                     </div>
                 </div>
             </main>

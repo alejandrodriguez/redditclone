@@ -34,13 +34,17 @@ function PageSelect(props) {
         option: provided => ({
             ...provided,
             cursor: "pointer"
+        }),
+        menuPortal: provided => ({
+            ...provided,
+            zIndex: 9999
         })
     };
 
     return (
         <Select
             placeholder="Subreddit"
-            className="w-72"
+            className="w-72 min-w-max"
             isSearchable={false}
             options={props.options}
             value={
@@ -57,6 +61,7 @@ function PageSelect(props) {
             }
             onChange={redirect}
             styles={customStyles}
+            menuPortalTarget={document.body}
         />
     );
 }

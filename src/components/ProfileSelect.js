@@ -25,11 +25,11 @@ function ProfileSelect() {
             label: (
                 <div className="flex gap-1">
                     <img
-                        className="w-6 rounded-full"
+                        className="w-6 h-6 rounded-full"
                         src={profilePic}
                         alt="Profile Icon"
                     />
-                    <p>{username}</p>
+                    <p className="hidden sm:block">{username}</p>
                 </div>
             )
         },
@@ -80,17 +80,22 @@ function ProfileSelect() {
         option: provided => ({
             ...provided,
             cursor: "pointer"
+        }),
+        menuPortal: provided => ({
+            ...provided,
+            zIndex: 9999
         })
     };
 
     return (
         <Select
-            className="min-w-min"
+            className="min-w-max"
             hideSelectedOptions
             value={options[0]}
             options={options}
             styles={customStyles}
             onChange={handleChange}
+            menuPortalTarget={document.body}
         />
     );
 }

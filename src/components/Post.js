@@ -160,7 +160,7 @@ function Post(props) {
                             src={props.post.src}
                             alt="User uploaded"
                             className={`max-h-[600px] object-contain m-auto ${
-                                blurImgOrVid ? "blur-3xl" : ""
+                                blurImgOrVid ? "blur-xl" : ""
                             }`}
                             onClick={() => setBlurImgOrVid(false)}
                         />
@@ -169,7 +169,7 @@ function Post(props) {
                         <video
                             controls
                             width="100%"
-                            className={blurImgOrVid ? "blur-3xl" : ""}
+                            className={blurImgOrVid ? "blur-xl" : ""}
                             onClick={() => setBlurImgOrVid(false)}
                         >
                             <source src={props.post.src} />
