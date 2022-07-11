@@ -193,6 +193,8 @@ function Comments() {
                 ),
                 { upvoted: true, downvoted: false }
             );
+            // Clear comment form
+            setCommentToBeSubmitted("");
             // Refresh Page
             navigate(`/r/${params.subreddit}/comments/${params.postid}`);
         } catch (error) {
@@ -211,7 +213,7 @@ function Comments() {
                     <span className="flex-1">{post.title}</span>
                     <span
                         className="flex items-center justify-end cursor-pointer hover:text-gray-300"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate("/")}
                     >
                         <svg
                             style={{ width: "24px", height: "24px" }}

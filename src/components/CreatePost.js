@@ -83,20 +83,52 @@ function CreatePost() {
         reader.readAsDataURL(file);
     }
 
-    async function submitPost(e) {
-        e.preventDefault();
-        // Reject if required fields remain unfilled
+    const [subredditInvalid, setSubredditInvalid] = useState(false);
+
+    function formValid() {
         if (
-            !subreddit ||
             !title ||
             (type === "text" && !body) ||
             (type === "image" && !image) ||
             (type === "video" && !video)
         ) {
+            return false;
+        } else if (!subreddit) {
+            setSubredditInvalid(true);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function updateSubreddit(option) {
+        if (option.value !== "") {
+            setSubredditInvalid(false);
+        }
+        setSubreddit(option);
+    }
+
+    const customStyles = {
+        valueContainer: provided => ({
+            ...provided,
+            border: subredditInvalid ? "1px solid red" : ""
+        })
+    };
+
+    const [submittingPost, setSubmittingPost] = useState(false);
+    const [errorOcurred, setErrorOcurred] = useState(false);
+    const [successfullyUploaded, setSuccessfullyUploaded] = useState(false);
+
+    async function submitPost(e) {
+        e.preventDefault();
+        // Reject if required fields remain unfilled
+        if (!formValid()) {
             return;
         }
         // Disable Post button while post is being uploaded
         e.target.disabled = true;
+        setErrorOcurred(false);
+        setSubmittingPost(true);
         try {
             const post = {
                 subreddit: subreddit.value,
@@ -154,10 +186,13 @@ function CreatePost() {
                 ),
                 { upvoted: true, downvoted: false }
             );
+            setSuccessfullyUploaded(true);
             navigate("/");
         } catch (error) {
             console.log(error);
             e.target.disabled = false;
+            setSubmittingPost(false);
+            setErrorOcurred(true);
         }
     }
 
@@ -173,8 +208,27 @@ function CreatePost() {
                         className="w-72 mb-2"
                         options={subredditOptions}
                         placeholder="Choose a community"
-                        onChange={setSubreddit}
+                        onChange={updateSubreddit}
+                        styles={customStyles}
                     />
+                    {submittingPost && (
+                        <h2
+                            className={`text-center rounded text-white mb-2 p-2 ${
+                                successfullyUploaded
+                                    ? "bg-green-500"
+                                    : "bg-blue-500"
+                            }`}
+                        >
+                            {successfullyUploaded
+                                ? "Success"
+                                : "Submitting Post..."}
+                        </h2>
+                    )}
+                    {errorOcurred && (
+                        <h2 className="text-center bg-red-500 rounded text-white mb-2 p-2">
+                            An error ocurred. Please try again.
+                        </h2>
+                    )}
                     <div className="bg-white rounded-md">
                         <div className="flex">
                             <div

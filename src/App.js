@@ -96,9 +96,13 @@ function App() {
                 <Navbar />
             </header>
             <main className="m-6">
-                {posts.map((post, index) => (
-                    <Post post={post} key={index} />
-                ))}
+                {posts.length === 0 ? (
+                    <h2 className="text-center text-lg text-gray-700 italic">
+                        No posts yet. Be the first!
+                    </h2>
+                ) : (
+                    posts.map((post, index) => <Post post={post} key={index} />)
+                )}
             </main>
         </div>
     );

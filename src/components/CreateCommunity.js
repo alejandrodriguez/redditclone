@@ -17,18 +17,22 @@ function CreateCommunity() {
         setCharactersRemaining(21 - e.target.value.length);
     }
 
+    const [errorOcurred, setErrorOccurred] = useState(false);
+
     async function createSubreddit(e) {
         e.preventDefault();
         if (!subredditName || subredditName.length > 21) {
             return;
         }
         e.target.disabled = true;
+        setErrorOccurred(false);
         try {
             // Check if subreddit already exists
             const subredditRef = await getDoc(
                 doc(db, "subreddits", subredditName)
             );
-            if (subredditRef.exists) {
+            if (subredditRef.exists()) {
+                console.log(subredditRef);
                 throw new Error("Subreddit already exists");
             }
             // Create new subreddit
@@ -37,6 +41,7 @@ function CreateCommunity() {
         } catch (error) {
             console.log(error);
             e.target.disabled = false;
+            setErrorOccurred(true);
         }
     }
 
@@ -72,6 +77,11 @@ function CreateCommunity() {
                             <p className="text-gray-500 text-xs">
                                 {charactersRemaining} characters remaining
                             </p>
+                            {errorOcurred && (
+                                <p className="text-sm text-red-500">
+                                    Error. Please try agian.
+                                </p>
+                            )}
                         </div>
                         <div className="bg-gray-200 p-4 flex justify-end items-center">
                             <button
