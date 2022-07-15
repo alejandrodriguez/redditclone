@@ -98,7 +98,7 @@ function App() {
             <main className="m-6">
                 {posts.length === 0 ? (
                     <h2 className="text-center text-lg text-gray-700 italic">
-                        No posts yet. Be the first!
+                        Loading...
                     </h2>
                 ) : (
                     posts.map((post, index) => <Post post={post} key={index} />)
