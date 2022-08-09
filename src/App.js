@@ -17,9 +17,7 @@ function App() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
-            if (!user) {
-                navigate("/signup");
-            } else if (user && !user.displayName) {
+            if (user && !user.displayName) {
                 navigate("/signup/setusername");
             }
             return unsubscribe;
@@ -55,32 +53,34 @@ function App() {
                     voteData: { upvoted: false, downvoted: false }
                 });
             });
-            // Retrieve data on which posts have been voted on by user
-            const votedPostsData = [];
-            const votedSnapshot = await getDocs(
-                collection(
-                    db,
-                    "users",
-                    auth.currentUser.displayName,
-                    "votedPosts"
-                )
-            );
-            votedSnapshot.forEach(post => {
-                votedPostsData.push({
-                    ...post.data(),
-                    id: post.id
-                });
-            });
-            // Add voted data to loadedPosts
-            loadedPosts.forEach(lPost => {
-                const votedData = votedPostsData.find(
-                    vPost => lPost.id === vPost.id
+            if (auth.currentUser) {
+                // Retrieve data on which posts have been voted on by user
+                const votedPostsData = [];
+                const votedSnapshot = await getDocs(
+                    collection(
+                        db,
+                        "users",
+                        auth.currentUser.displayName,
+                        "votedPosts"
+                    )
                 );
-                if (votedData) {
-                    lPost.voteData.upvoted = votedData.upvoted;
-                    lPost.voteData.downvoted = votedData.downvoted;
-                }
-            });
+                votedSnapshot.forEach(post => {
+                    votedPostsData.push({
+                        ...post.data(),
+                        id: post.id
+                    });
+                });
+                // Add voted data to loadedPosts
+                loadedPosts.forEach(lPost => {
+                    const votedData = votedPostsData.find(
+                        vPost => lPost.id === vPost.id
+                    );
+                    if (votedData) {
+                        lPost.voteData.upvoted = votedData.upvoted;
+                        lPost.voteData.downvoted = votedData.downvoted;
+                    }
+                });
+            }
             return loadedPosts;
         }
         retrievePosts()

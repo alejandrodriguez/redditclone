@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { db } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 import logo from "../img/logo-navbar.png";
 import logonotext from "../img/logo-navbar-no-text.png";
@@ -86,7 +86,7 @@ function Navbar() {
     }, []);
 
     return (
-        <nav className="flex items-center gap-6 bg-white w-full p-2">
+        <nav className="Navbar flex items-center gap-6 bg-white w-full p-2">
             <Link to="/">
                 <img
                     src={logo}
@@ -100,28 +100,47 @@ function Navbar() {
                 />
             </Link>
             <PageSelect options={subredditOptions} />
-            <Link
-                to="/createpost"
-                className="hover:bg-gray-300 hover:text-gray-600 rounded text-gray-500 ml-auto"
-            >
-                <abbr title="Create Post">
-                    <svg
-                        className="w7 h-7"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
+            {auth.currentUser && (
+                <Link
+                    to="/createpost"
+                    className="hover:bg-gray-300 hover:text-gray-600 rounded text-gray-500 ml-auto"
+                >
+                    <abbr title="Create Post">
+                        <svg
+                            className="w7 h-7"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                            ></path>
+                        </svg>
+                    </abbr>
+                </Link>
+            )}
+            {auth.currentUser ? (
+                <ProfileSelect />
+            ) : (
+                <div className="flex gap-1 ml-auto">
+                    <Link
+                        to="/login"
+                        className="navBtn text-blue-500 border-blue-500 min-w-max"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        ></path>
-                    </svg>
-                </abbr>
-            </Link>
-            <ProfileSelect />
+                        Log In
+                    </Link>
+                    <Link
+                        to="/signup"
+                        className="navBtn text-white border-blue-500 bg-blue-500 min-w-max"
+                    >
+                        Sign Up
+                    </Link>
+                </div>
+            )}
         </nav>
     );
 }

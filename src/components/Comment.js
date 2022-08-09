@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Votes from "./Votes";
 import { auth, db } from "../firebaseConfig";
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function Comment(props) {
     const [upvoted, setUpvoted] = useState(props.comment.voteData.upvoted);
@@ -11,7 +12,14 @@ function Comment(props) {
 
     const [voteCount, setVoteCount] = useState(props.comment.votes);
 
+    const navigate = useNavigate();
+
     async function updateVote(voteType) {
+        // Redirect if not signed in
+        if (!auth.currentUser) {
+            navigate("/signup");
+            return;
+        }
         let voteCountCache = voteCount;
         // If removing upvote or downvote, delete comment from votedComments
         if (

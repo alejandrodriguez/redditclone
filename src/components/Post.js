@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Votes from "./Votes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
@@ -14,7 +14,13 @@ function Post(props) {
         props.comments ? false : props.post.spoiler || props.post.NSFW
     );
 
+    const navigate = useNavigate();
+
     async function updateVote(voteType) {
+        if (!auth.currentUser) {
+            navigate("/signup");
+            return;
+        }
         let voteCountCache = voteCount;
         // If removing upvote or downvote, delete post from votedPosts
         if (

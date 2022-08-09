@@ -24,9 +24,7 @@ function Comments() {
     // Redirect if use is not signed up
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
-            if (!user) {
-                navigate("/signup");
-            } else if (user && !user.displayName) {
+            if (user && !user.displayName) {
                 navigate("/signup/setusername");
             }
             return unsubscribe;
@@ -51,20 +49,21 @@ function Comments() {
                     )
                 );
                 const retrievedPost = postSnapshot.data();
-                const voteData = await getDoc(
-                    doc(
-                        db,
-                        "users",
-                        auth.currentUser.displayName,
-                        "votedPosts",
-                        params.postid
-                    )
-                );
-                if (voteData.exists) {
-                    retrievedPost.voteData = voteData.data();
-                } else {
-                    retrievedPost.voteData.upvoted = false;
-                    retrievedPost.voteData.downvoted = false;
+                // Set default vote data
+                retrievedPost.voteData = { upvoted: false, downvoted: false };
+                if (auth.currentUser) {
+                    const voteData = await getDoc(
+                        doc(
+                            db,
+                            "users",
+                            auth.currentUser.displayName,
+                            "votedPosts",
+                            params.postid
+                        )
+                    );
+                    if (voteData.exists) {
+                        retrievedPost.voteData = voteData.data();
+                    }
                 }
                 setPost(retrievedPost);
                 setRenderPost(true);
@@ -104,31 +103,33 @@ function Comments() {
                     voteData: { upvoted: false, downvoted: false }
                 });
             });
-            // Retrieve data on which comments have been voted on by user
-            const votedCommentsData = [];
-            const votedSnapshot = await getDocs(
-                collection(
-                    db,
-                    "users",
-                    auth.currentUser.displayName,
-                    "votedComments"
-                )
-            );
-            votedSnapshot.forEach(comment => {
-                votedCommentsData.push({
-                    ...comment.data(),
-                    id: comment.id
-                });
-            });
-            // Add voted data to loadedComments
-            loadedComments.forEach(lComment => {
-                const votedData = votedCommentsData.find(
-                    vComment => lComment.id === vComment.id
+            if (auth.currentUser) {
+                // Retrieve data on which comments have been voted on by user
+                const votedCommentsData = [];
+                const votedSnapshot = await getDocs(
+                    collection(
+                        db,
+                        "users",
+                        auth.currentUser.displayName,
+                        "votedComments"
+                    )
                 );
-                if (votedData) {
-                    lComment.voteData = votedData;
-                }
-            });
+                votedSnapshot.forEach(comment => {
+                    votedCommentsData.push({
+                        ...comment.data(),
+                        id: comment.id
+                    });
+                });
+                // Add voted data to loadedComments
+                loadedComments.forEach(lComment => {
+                    const votedData = votedCommentsData.find(
+                        vComment => lComment.id === vComment.id
+                    );
+                    if (votedData) {
+                        lComment.voteData = votedData;
+                    }
+                });
+            }
             return loadedComments;
         }
         retrieveComments()
@@ -142,6 +143,10 @@ function Comments() {
 
     async function submitComment(e) {
         e.preventDefault();
+        if (!auth.currentUser) {
+            navigate("/signup");
+            return;
+        }
         if (!commentToBeSubmitted) {
             return;
         }
@@ -232,10 +237,8 @@ function Comments() {
                     <div className="bg-white max-w-[1000px] m-auto">
                         <div className="px-8 py-4">
                             <p className="text-sm">
-                                Comment as{" "}
-                                {auth.currentUser
-                                    ? auth.currentUser.displayName
-                                    : ""}
+                                {auth.currentUser &&
+                                    `Comment as ${auth.currentUser.displayName}`}
                             </p>
                             <form className="flex flex-col gap-1">
                                 <textarea
