@@ -78,10 +78,10 @@ function SignUp() {
                         for this site. This is a project built for my portfolio.
                     </span>{" "}
                     Authentication for this project is provided by Firebase,
-                    Google's app development platform. If you sign in with
-                    Google, I cannot access any private information. If you sign
-                    up with an email and password, please do not use a password
-                    you use for any other site.
+                    Google's app development platform. Though access to your
+                    private information is not provided to me, if you should
+                    make an account with email and password, please do not use a
+                    password you use for any other site.
                 </p>
                 <button
                     className="uppercase text-center py-2 px-4 border-1 border-blue-500 text-blue-500 font-bold rounded hover:bg-blue-500 hover:text-white w-full flex items-center my-2"
