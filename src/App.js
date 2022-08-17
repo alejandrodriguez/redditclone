@@ -25,6 +25,7 @@ function App() {
     }, [navigate]);
 
     const [posts, setPosts] = useState([]);
+    const [havePostsLoaded, setHavePostsLoaded] = useState(false);
 
     const params = useParams();
 
@@ -86,6 +87,7 @@ function App() {
         retrievePosts()
             .then(retrievedPosts => {
                 setPosts(retrievedPosts);
+                setHavePostsLoaded(true);
             })
             .catch(error => console.log(error));
     }, [params]);
@@ -97,9 +99,15 @@ function App() {
             </header>
             <main className="m-6">
                 {posts.length === 0 ? (
-                    <h2 className="text-center text-lg text-gray-700 italic">
-                        Loading...
-                    </h2>
+                    havePostsLoaded ? (
+                        <h2 className="text-center text-lg text-gray-700 italic">
+                            No posts yet. Be the first!
+                        </h2>
+                    ) : (
+                        <h2 className="text-center text-lg text-gray-700 italic">
+                            Loading...
+                        </h2>
+                    )
                 ) : (
                     posts.map((post, index) => <Post post={post} key={index} />)
                 )}
