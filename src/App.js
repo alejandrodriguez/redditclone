@@ -93,7 +93,7 @@ function App() {
     }, [params]);
 
     return (
-        <div className="App">
+        <div className="App min-w-full">
             <header className="sticky top-0 w-full">
                 <Navbar />
             </header>

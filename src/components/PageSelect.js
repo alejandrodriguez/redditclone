@@ -43,8 +43,8 @@ function PageSelect(props) {
 
     return (
         <Select
-            placeholder="Subreddit"
-            className="w-72 min-w-max"
+            placeholder="..."
+            className="w-48 md:w-72"
             isSearchable={false}
             options={props.options}
             value={

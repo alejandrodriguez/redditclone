@@ -86,8 +86,8 @@ function Navbar() {
     }, []);
 
     return (
-        <nav className="Navbar flex items-center gap-6 bg-white w-full p-2">
-            <Link to="/">
+        <nav className="Navbar flex items-center gap-2 md:gap-6 bg-white w-full p-2">
+            <Link to="/" className="min-w-max">
                 <img
                     src={logo}
                     alt="Reddit Logo"
@@ -126,7 +126,7 @@ function Navbar() {
             {auth.currentUser ? (
                 <ProfileSelect />
             ) : (
-                <div className="flex gap-1 ml-auto">
+                <div className="flex gap-1 ml-auto text-sm md:text-base">
                     <Link
                         to="/login"
                         className="navBtn text-blue-500 border-blue-500 min-w-max"
@@ -135,7 +135,7 @@ function Navbar() {
                     </Link>
                     <Link
                         to="/signup"
-                        className="navBtn text-white border-blue-500 bg-blue-500 min-w-max"
+                        className="navBtn text-white border-blue-500 bg-blue-500 min-w-max hidden md-sm:block"
                     >
                         Sign Up
                     </Link>

@@ -119,7 +119,7 @@ function Post(props) {
                 {props.post.pinned && (
                     <div className="flex items-center gap-1 ml-[-0.5rem]">
                         <svg
-                            className="text-green-500 opacity-70"
+                            className="text-green-500"
                             style={{
                                 width: "22px",
                                 height: "22px"
@@ -141,11 +141,13 @@ function Post(props) {
                         to={`/r/${props.post.subreddit}`}
                         className="font-bold hover:underline"
                     >{`r/${props.post.subreddit}`}</Link>
-                    <p className="text-gray-500">•</p>
-                    <p className="text-gray-500">{`Posted by u/${props.post.author.displayName}`}</p>
+                    <p className="text-gray-500 hidden sm:block">•</p>
+                    <p className="text-gray-500 min-w-max hidden sm:block">{`Posted by u/${props.post.author.displayName}`}</p>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <h2 className="font-bold text-lg">{props.post.title}</h2>
+                    <h2 className="font-bold text-base md:text-lg">
+                        {props.post.title}
+                    </h2>
                     {props.post.spoiler && (
                         <p className="px-1 text-xs text-gray-500 border border-gray-500 rounded-sm">
                             spoiler
@@ -159,7 +161,9 @@ function Post(props) {
                 </div>
                 <div className="self-center w-full">
                     {props.post.type === "text" && (
-                        <p className="whitespace-pre-line">{props.post.body}</p>
+                        <p className="whitespace-pre-line text-sm md:text-base">
+                            {props.post.body}
+                        </p>
                     )}
                     {props.post.type === "image" && (
                         <img

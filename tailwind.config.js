@@ -6,6 +6,9 @@ module.exports = {
             borderWidth: {
                 1: "1px"
             }
+        },
+        screens: {
+            "md-sm": "480px"
         }
     },
     plugins: []
