@@ -87,18 +87,20 @@ function Navbar() {
 
     return (
         <nav className="Navbar flex items-center gap-2 md:gap-6 bg-white w-full p-2">
-            <Link to="/" className="min-w-max">
-                <img
-                    src={logo}
-                    alt="Reddit Logo"
-                    className="h-8 min-w-max hidden md:inline"
-                />
-                <img
-                    src={logonotext}
-                    alt="Reddit Logo"
-                    className="h-8 min-w-max md:hidden"
-                />
-            </Link>
+            <div className="h-8 w-[32px] md:w-[100px]">
+                <Link to="/" className="min-w-max">
+                    <img
+                        src={logo}
+                        alt="Reddit Logo"
+                        className="w-full hidden md:inline"
+                    />
+                    <img
+                        src={logonotext}
+                        alt="Reddit Logo"
+                        className="w-full md:hidden"
+                    />
+                </Link>
+            </div>
             <PageSelect options={subredditOptions} />
             {auth.currentUser && (
                 <Link
@@ -135,7 +137,7 @@ function Navbar() {
                     </Link>
                     <Link
                         to="/signup"
-                        className="navBtn text-white border-blue-500 bg-blue-500 min-w-max hidden md-sm:block"
+                        className="navBtn text-white border-blue-500 bg-blue-500 min-w-max hidden 480:block"
                     >
                         Sign Up
                     </Link>

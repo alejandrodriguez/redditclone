@@ -5,10 +5,10 @@ module.exports = {
         extend: {
             borderWidth: {
                 1: "1px"
+            },
+            screens: {
+                480: "480px"
             }
-        },
-        screens: {
-            "md-sm": "480px"
         }
     },
     plugins: []
