@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/reddit-clone/static/css/main.3a7ee37f.css",
-    "main.js": "/reddit-clone/static/js/main.0018091a.js",
-    "static/media/logo-navbar.png": "/reddit-clone/static/media/logo-navbar.e269fb02958237d0ec06.png",
-    "static/media/log-in-art.png": "/reddit-clone/static/media/log-in-art.402a08ec8ea904b0a9ce.png",
-    "static/media/google-icon.png": "/reddit-clone/static/media/google-icon.955633b137228b89a3ad.png",
-    "static/media/logo-navbar-no-text.png": "/reddit-clone/static/media/logo-navbar-no-text.b31490f4d2c259eabebd.png",
-    "static/media/default-profile-picture.png": "/reddit-clone/static/media/default-profile-picture.90dc751e8e8e5557d629.png",
-    "index.html": "/reddit-clone/index.html",
-    "main.3a7ee37f.css.map": "/reddit-clone/static/css/main.3a7ee37f.css.map",
-    "main.0018091a.js.map": "/reddit-clone/static/js/main.0018091a.js.map"
+    "main.css": "/redditclone/static/css/main.3a7ee37f.css",
+    "main.js": "/redditclone/static/js/main.9c037194.js",
+    "static/media/logo-navbar.png": "/redditclone/static/media/logo-navbar.e269fb02958237d0ec06.png",
+    "static/media/log-in-art.png": "/redditclone/static/media/log-in-art.402a08ec8ea904b0a9ce.png",
+    "static/media/google-icon.png": "/redditclone/static/media/google-icon.955633b137228b89a3ad.png",
+    "static/media/logo-navbar-no-text.png": "/redditclone/static/media/logo-navbar-no-text.b31490f4d2c259eabebd.png",
+    "static/media/default-profile-picture.png": "/redditclone/static/media/default-profile-picture.90dc751e8e8e5557d629.png",
+    "index.html": "/redditclone/index.html",
+    "main.3a7ee37f.css.map": "/redditclone/static/css/main.3a7ee37f.css.map",
+    "main.9c037194.js.map": "/redditclone/static/js/main.9c037194.js.map"
   },
   "entrypoints": [
     "static/css/main.3a7ee37f.css",
-    "static/js/main.0018091a.js"
+    "static/js/main.9c037194.js"
   ]
 }
