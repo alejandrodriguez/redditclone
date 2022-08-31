@@ -1,5 +1,5 @@
 {
-  "name": "reddit-clone",
+  "name": "redditclone",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -45,5 +45,5 @@
   "devDependencies": {
     "tailwindcss": "^3.1.4"
   },
-  "homepage": "https://alejandrodriguez.github.io/reddit-clone"
+  "homepage": "https://alejandrodriguez.github.io/redditclone"
 }
